@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar"><h1 id="title">記録</h1></header>
+  <header class="topbar"><h1 id="title">ホーム</h1></header>
 
   <main id="view" class="view"></main>
 
@@ -30,7 +30,11 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <nav class="tabbar">
-    <button type="button" data-tab="record" class="active">
+    <button type="button" data-tab="home" class="active">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6.5 8 6.5V20h-5v-5.5H9V20H4z"/></svg>
+      <span>ホーム</span>
+    </button>
+    <button type="button" data-tab="record">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6.5 7v10M17.5 7v10M21 10v4M6.5 12h11"/></svg>
       <span>記録</span>
     </button>
