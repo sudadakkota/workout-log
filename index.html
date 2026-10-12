@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Workout Log</title>
+  <meta name="description" content="広告なしのシンプルな筋トレ記録アプリ">
+  <meta name="theme-color" content="#ff6a3d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="筋トレ記録">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar"><h1 id="title">記録</h1></header>
+
+  <main id="view" class="view"></main>
+
+  <div id="timer" class="timer" hidden>
+    <span class="t-label">休憩</span>
+    <span class="t-time" id="timerTime">0:00</span>
+    <button type="button" class="t-btn" data-act="timer-add">+30秒</button>
+    <button type="button" class="t-btn" data-act="timer-stop">停止</button>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <nav class="tabbar">
+    <button type="button" data-tab="record" class="active">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4M6.5 7v10M17.5 7v10M21 10v4M6.5 12h11"/></svg>
+      <span>記録</span>
+    </button>
+    <button type="button" data-tab="history">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+      <span>履歴</span>
+    </button>
+    <button type="button" data-tab="graph">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16"/><path d="M7.5 15l4-4.5 3 3L20 7"/></svg>
+      <span>グラフ</span>
+    </button>
+    <button type="button" data-tab="settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      <span>設定</span>
+    </button>
+  </nav>
+
+  <div id="sheet" class="sheet-backdrop" hidden>
+    <div class="sheet" id="sheetBody" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
