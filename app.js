@@ -10,6 +10,7 @@ const DEFAULT_EXERCISES = {
   '脚': ['スクワット', 'レッグプレス', 'ブルガリアンスクワット', 'レッグエクステンション', 'レッグカール', 'カーフレイズ'],
   '肩': ['ショルダープレス', 'サイドレイズ', 'リアレイズ', 'フロントレイズ', 'アップライトロウ'],
   '腕': ['バーベルカール', 'ダンベルカール', 'ハンマーカール', 'トライセプスエクステンション', 'ケーブルプッシュダウン'],
+  'お尻': ['ヒップスラスト'],
   '腹': ['クランチ', 'レッグレイズ', 'アブローラー'],
   'その他': [],
 };
@@ -80,7 +81,7 @@ function defaultState() {
   for (const [part, names] of Object.entries(DEFAULT_EXERCISES)) {
     for (const name of names) exercises.push({ id: uid(), name, part });
   }
-  return { version: 1, exercises, sets: [], settings: { restSec: 90 }, lastBackup: null };
+  return { version: 1, exercises, sets: [], settings: { restSec: 90 }, lastBackup: null, bodyWeights: [], cardio: [] };
 }
 
 function normalizeState(d) {
@@ -97,9 +98,13 @@ function normalizeState(d) {
         weight: Number(s.weight) || 0,
         reps: Number(s.reps) || 0,
         createdAt: Number(s.createdAt) || 0,
+        ...(s.memo ? { memo: String(s.memo) } : {}),
       })),
     settings: { ...base.settings, ...(d.settings || {}) },
     lastBackup: d.lastBackup || null,
+    // 体重・有酸素運動は今は画面がないが、取り込んだデータを失わないよう保持する
+    bodyWeights: Array.isArray(d.bodyWeights) ? d.bodyWeights : [],
+    cardio: Array.isArray(d.cardio) ? d.cardio : [],
   };
 }
 
@@ -201,7 +206,8 @@ function exerciseCard(id, date, list) {
     if (running === null || s.weight > running) running = s.weight;
     return `<li>
       <span class="set-no">${i + 1}</span>
-      <span class="set-val"><b>${fmtNum(s.weight)}</b> kg × <b>${s.reps}</b> 回</span>
+      <span class="set-val"><b>${fmtNum(s.weight)}</b> kg × <b>${s.reps}</b> 回${s.memo ? `<span class="set-memo">${esc(s.memo)}</span>` : ''}</span>
+      <button class="del" data-act="memo-set" data-id="${s.id}" aria-label="メモ">✎</button>
       ${isPR ? '<span class="pr">PR</span>' : ''}
       <button class="del" data-act="del-set" data-id="${s.id}" aria-label="このセットを削除">×</button>
     </li>`;
@@ -215,6 +221,7 @@ function exerciseCard(id, date, list) {
         : `<button class="icon-btn" data-act="remove-pending" data-ex="${id}" aria-label="この種目を外す">×</button>`}
     </div>
     ${prev ? `<div class="prev">前回 ${fmtShort(prev.date)}：${prev.sets.map((s) => `${fmtNum(s.weight)}×${s.reps}`).join(', ')}</div>` : ''}
+    ${prev && prev.sets.some((s) => s.memo) ? `<div class="prev-memo">📝 ${prev.sets.filter((s) => s.memo).map((s) => esc(s.memo)).join(' / ')}</div>` : ''}
     ${rows ? `<ol class="sets">${rows}</ol>` : ''}
     <form class="add-set" data-ex="${id}">
       <label class="unit-input"><input name="w" type="number" inputmode="decimal" step="any" min="0" value="${ref ? fmtNum(ref.weight) : ''}" placeholder="0" aria-label="重量"><span>kg</span></label>
@@ -517,6 +524,14 @@ const actions = {
   'remove-pending': (t) => {
     const list = ui.pending[ui.date] || [];
     ui.pending[ui.date] = list.filter((id) => id !== t.dataset.ex);
+    render();
+  },
+  'memo-set': async (t) => {
+    const s = S.sets.find((x) => x.id === t.dataset.id);
+    const memo = prompt('メモ（空にすると削除）', s.memo || '');
+    if (memo === null) return;
+    if (memo.trim()) s.memo = memo.trim(); else delete s.memo;
+    await save();
     render();
   },
   'del-set': async (t) => {

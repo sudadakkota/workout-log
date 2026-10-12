@@ -339,3 +339,6 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1
   transition: opacity .2s, transform .2s;
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.set-memo { display: block; font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.prev-memo { font-size: 12px; color: var(--muted); background: var(--surface-2); border-radius: 8px; padding: 4px 8px; margin: 4px 0 2px; overflow-wrap: anywhere; }
